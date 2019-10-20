@@ -1,0 +1,292 @@
+%%
+%% This is file 'bxjatoucs.sty'.
+%%
+%% Copyright (c) 2019 Takayuki YATO (aka. "ZR")
+%%   GitHub:   https://github.com/zr-tex8r
+%%   Twitter:  @zr_tex8r
+%%
+%% This package is distributed under the MIT License.
+%%
+%
+%% avoid multiple loading
+\csname\if11bxjatoucsLoaded\fi\endcsname
+%% code guards
+\edef\bxjatoucsLoaded{%
+\catcode32=\the\catcode32%
+\catcode34=\the\catcode34%
+\catcode43=\the\catcode43%
+\catcode45=\the\catcode45%
+\catcode46=\the\catcode46%
+\catcode47=\the\catcode47%
+\catcode58=\the\catcode58%
+\catcode60=\the\catcode60%
+\catcode62=\the\catcode62%
+\catcode63=\the\catcode63%
+\catcode64=\the\catcode64%
+\catcode96=\the\catcode96%
+\relax}
+\catcode32=10\relax
+\catcode34=12 % <">
+\catcode43=12 % <+>
+\catcode45=12 % <->
+\catcode46=12 % <.>
+\catcode47=12 % </>
+\catcode58=12 % <:>
+\catcode60=12 % <<>
+\catcode62=12 % <>>
+\catcode63=12 % <?>
+\catcode64=11 % <@>
+\catcode96=12 % <`>
+\edef\bxju@restore@codes{\bxjatoucsLoaded
+  \noexpand\let\noexpand\bxju@restore@codes\relax}
+\def\bxjatoucsLoaded{\endinput}
+
+%% check for LaTeX
+\ifx\RequirePackage\@undefined %<*!LaTeX>
+  \let\bxju@latex=f
+  \long\def\bxju@next#1\ProvidesPackage#2[#3]{%
+    \immediate\write-1{Package: #2 #3}}
+  \expandafter\bxju@next
+\else                          %<*LaTeX>
+  \let\bxju@latex=t
+\fi                            %</LaTeX>
+
+%% package declaration
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{bxjatoucs}[2019/10/20 v0.2]
+\def\bxju@pkgname{bxjatoucs}
+
+%--------------------------------------- "check-avail"
+
+\let\bxju@bad\@undefined
+\ifx\bxjatoucsCheckAvail\@undefined\else \if t\bxju@latex
+  \IfFileExists{ltxcmds.sty}{}{\let\bxju@bad=t}
+  \IfFileExists{infwarerr.sty}{}{\let\bxju@bad=t}
+\fi\fi
+\ifx t\bxju@bad
+  \expandafter\let\csname ver@\bxju@pkgname.sty\endcsname\@undefined
+  \expandafter\let\csname \bxju@pkgname Loaded\endcsname\@undefined
+\bxju@restore@codes\endinput\fi
+
+%--------------------------------------- general
+
+\if t\bxju@latex    %-------<*LaTeX>
+
+%% packages
+\RequirePackage{ltxcmds}[2010/12/12]% v1.15
+\RequirePackage{infwarerr}[2010/04/08]% v1.3
+%% \bxju@ifdefinable
+\let\bxju@ifdefinable\@ifdefinable
+
+\else               %-------<*!LaTeX>
+
+%% package
+\input ltxcmds.sty
+\input infwarerr.sty
+%% \bxju@ifdefinable
+\def\bxju@ifdefinable#1{%
+  \ifx#1\@undefined \expandafter\ltx@secondoftwo
+  \else \expandafter\ltx@firstoftwo
+  \fi{%
+    \@PackageError\bxju@pkgname
+     {Command \noexpand#1 already defined}{\@ehd}%
+  }}
+
+\fi                 %-------</LaTeX>
+
+%% unique tokens
+\def\bxju@end{\bxju@end@}
+\let\bxju@mk\indent % unexpandable
+
+%% \bxju@cond\ifXXX...\fi{<true>}{<false>}
+\ltx@gobbletwo\if\if \def\bxju@cond#1\fi{%
+  #1\expandafter\ltx@firstoftwo \else\expandafter\ltx@secondoftwo \fi}
+
+%% \bxju@cond@both\ifXXX...\fi\ifYYY...\fi{<true>}{<false>}
+\ltx@gobblefour\if\if\if\if \def\bxju@cond@both#1\fi#2\fi{%
+  \bxju@cond{\if #1#2T\else F\fi\else F\fi T}\fi}
+
+%% \bxju@burst-`>...
+\let\bxju@burst\romannumeral
+
+%% check engine
+\ifx\numexpr\@undefined
+  \@PackageError\bxju@pkgname
+   {Not running under e-TeX}{\@ehd}
+\bxju@restore@codes\endinput\fi
+
+%--------------------------------------- user interface
+
+% Each function twice-expands to the unicode codevalue.
+
+%%<*> \bxjaCidToUcs{<cid>}
+\bxju@ifdefinable\bxjaCidToUcs{%
+  \def\bxjaCidToUcs{%
+    \bxju@burst-`>\bxju@cid@to@ucs}}
+%%<*> \bxjaJisToUcs{<jis>}
+\bxju@ifdefinable\bxjaJisToUcs{%
+  \def\bxjaJisToUcs{%
+    \bxju@burst-`>\bxju@jis@to@ucs}}
+%%<*> \bxjaEucToUcs{<euc>}
+\bxju@ifdefinable\bxjaEucToUcs{%
+  \def\bxjaEucToUcs{%
+    \bxju@burst-`>\bxju@euc@to@ucs}}
+%%<*> \bxjaSjisToUcs{<sjis>}
+\bxju@ifdefinable\bxjaSjisToUcs{%
+  \def\bxjaSjisToUcs{%
+    \bxju@burst-`>\bxju@sjis@to@ucs}}
+%%<*> \bxjaFastCidToUcs{<cid>}
+\bxju@ifdefinable\bxjaFastCidToUcs{%
+  \def\bxjaFastCidToUcs{%
+    \bxju@burst-`>\bxju@fast@cid@to@ucs}}
+%%<*> \bxjaFastJscToUcs{<jsc>}
+\bxju@ifdefinable\bxjaFastJscToUcs{%
+  \def\bxjaFastJscToUcs{%
+    \bxju@burst-`>\bxju@fast@jsc@to@ucs}}
+%%<*> \bxjaCidToUcsHex{<cid>}
+\bxju@ifdefinable\bxjaCidToUcsHex{%
+  \def\bxjaCidToUcsHex{%
+    \bxju@burst-`>\bxju@in@hex\bxju@cid@to@ucs}}
+%%<*> \bxjaJisToUcsHex{<jis>}
+\bxju@ifdefinable\bxjaJisToUcsHex{%
+  \def\bxjaJisToUcsHex{%
+    \bxju@burst-`>\bxju@in@hex\bxju@jis@to@ucs}}
+%%<*> \bxjaEucToUcsHex{<euc>}
+\bxju@ifdefinable\bxjaEucToUcsHex{%
+  \def\bxjaEucToUcsHex{%
+    \bxju@burst-`>\bxju@in@hex\bxju@euc@to@ucs}}
+%%<*> \bxjaSjisToUcsHex{<sjis>}
+\bxju@ifdefinable\bxjaSjisToUcsHex{%
+  \def\bxjaSjisToUcsHex{%
+    \bxju@burst-`>\bxju@in@hex\bxju@sjis@to@ucs}}
+%%<*> \bxjaFastCidToUcsHex{<cid>}
+\bxju@ifdefinable\bxjaFastCidToUcsHex{%
+  \def\bxjaFastCidToUcsHex{%
+    \bxju@burst-`>\bxju@in@hex\bxju@fast@cid@to@ucs}}
+%%<*> \bxjaFastJscToUcsHex{<jsc>}
+\bxju@ifdefinable\bxjaFastJscToUcsHex{%
+  \def\bxjaFastJscToUcsHex{%
+    \bxju@burst-`>\bxju@in@hex\bxju@fast@jsc@to@ucs}}
+
+%--------------------------------------- auxiliary
+
+%% \bxju@check@number{<text>}\CScont
+% Checks if the text is a valid number; if invalid, it causes
+% "missing number" error and returns 0; if valid, returns the
+% larger of 0 and the input number (in decimal).
+\def\bxju@check@number#1{%
+  \expandafter\bxju@check@number@a\the\parshapeindent#1\bxju@mk{#1}}
+\begingroup \lccode`?=`p \lowercase{\endgroup
+  \def\bxju@check@number@a#1?}#2#3\bxju@mk{%
+  \ltx@ifempty{#3}{\bxju@check@number@c}{%else
+    \expandafter\bxju@check@number@b\number\bxju@mk}}
+\def\bxju@check@number@b#1\bxju@mk#2#3{#3{#1}}
+\def\bxju@check@number@c#1{%
+  \expandafter\bxju@check@number@d\number#1\bxju@mk}
+\def\bxju@check@number@d#1\bxju@mk#2{%
+  \bxju@cond\ifnum#1>\ltx@zero\fi{#2{#1}}{#2{0}}}
+
+%% \bxju@decomp{<number>}\CScont
+% Divides the <number> by 256 and returns the quotient and
+% the remainder as \CScont{<high>}{<low>}.
+\def\bxju@decomp#1{%
+  \expandafter\bxju@decomp@a\number\dimexpr.00390625\dimexpr#1sp:#1:}
+\def\bxju@decomp@a#1:#2:{%
+  \expandafter\bxju@decomp@b\the\numexpr#2-#1*256:#1:}
+\def\bxju@decomp@b#1:#2:#3{#3{#2}{#1}}
+
+%% \bxju@in@hex\CSconv{<arg>}
+\def\bxju@in@hex#1#2{%
+  \expandafter\bxju@in@hex@a\bxju@burst-`>#1{#2}:>}
+\def\bxju@in@hex@a#1:>{%
+  \bxju@to@hex{#1}}
+
+%% \bxju@to@hex{<number>}
+\def\bxju@to@hex#1{% {N}
+  \bxju@to@hex@a#1:4::}% at least 4 digits
+\def\bxju@to@hex@a#1:#2:#3:{% N:C:H:|
+  \bxju@cond@both\ifnum#1=\ltx@zero\fi\ifnum#2<\ltx@one\fi{#3}{%else
+    \expandafter\bxju@to@hex@b\number\dimexpr.0625\dimexpr#1sp%
+    \expandafter:\the\numexpr#2-1:#1:#3:}}
+\def\bxju@to@hex@b#1:#2:#3:{% Q:C:N:|H:
+  \expandafter\bxju@to@hex@c\the\numexpr#3-#1*16:#2:#1:}
+\def\bxju@to@hex@c#1:{% R:|C:Q:H:
+  \expandafter\expandafter\expandafter\bxju@to@hex@d
+      \csname bxju@H/#1\endcsname:}
+\def\bxju@to@hex@d#1:#2:#3:#4:{% D:C:Q:H:
+  \bxju@to@hex@a#3:#2:#1#4:}
+\begingroup
+  \def\do#1{\expandafter\gdef\csname bxju@H/\number"#1\endcsname{#1}}
+  \do0\do1\do2\do3\do4\do5\do6\do7\do8\do9\do A\do B\do C\do D\do E\do F
+\endgroup
+
+%--------------------------------------- conversions
+
+%% constants
+\mathchardef\bxju@max@cid=23059
+\mathchardef\bxju@minb@jis="21
+\mathchardef\bxju@minb@euc="A1
+\mathchardef\bxju@jisrs=94
+
+%% umbralist fontdefs
+\font\bxju@ul@cid=bxjatoucs-cid
+\font\bxju@ul@jis=bxjatoucs-jis
+
+%% \bxju@cid@to@ucs{<cid>}
+\def\bxju@cid@to@ucs#1{%
+  \bxju@check@number{#1}\bxju@cid@to@ucs@a}
+\def\bxju@cid@to@ucs@a#1{%
+  \bxju@cond\ifnum#1>\bxju@max@cid\fi{0}{%
+    \number\fontdimen\numexpr#1+8\bxju@ul@cid}}
+
+%% \bxju@jis@to@ucs{<jis>}
+\def\bxju@jis@to@ucs#1{%
+  \bxju@check@number{#1}{\bxju@je@to@ucs\bxju@minb@jis}}
+%% \bxju@euc@to@ucs{<euc>}
+\def\bxju@euc@to@ucs#1{%
+  \bxju@check@number{#1}{\bxju@je@to@ucs\bxju@minb@euc}}
+\def\bxju@je@to@ucs#1#2{%
+  \bxju@decomp{#2}{\bxju@je@to@ucs@a#1}}
+\def\bxju@je@to@ucs@a#1#2#3{%
+  \expandafter\bxju@je@to@ucs@b\the\numexpr#2-#1\expandafter\bxju@mk
+      \the\numexpr#3-#1\bxju@mk}
+\def\bxju@je@to@ucs@b#1\bxju@mk#2\bxju@mk{%
+  \expandafter\bxju@je@to@ucs@c\the\numexpr
+    (\ifnum#1<\ltx@zero -9 \else\ifnum#1<\bxju@jisrs #1 \else
+     -9 \fi\fi)*\bxju@jisrs+%
+    (\ifnum#2<\ltx@zero -9999 \else\ifnum#2<\bxju@jisrs #2 \else
+     -9999 \fi\fi)\bxju@mk}
+\def\bxju@je@to@ucs@c#1\bxju@mk{%
+  \bxju@cond\ifnum#1<\ltx@zero\fi{0}{%
+    \number\fontdimen\numexpr#1+8\bxju@ul@jis}}
+
+%% \bxju@sjis@to@ucs{<euc>}
+\def\bxju@sjis@to@ucs#1{%
+  \bxju@check@number{#1}\bxju@sjis@to@ucs@a}
+\def\bxju@sjis@to@ucs@a#1{%
+  \bxju@decomp{#1}\bxju@sjis@to@ucs@b}
+\def\bxju@sjis@to@ucs@b#1#2{%
+  \expandafter\bxju@sjis@to@ucs@c\the\numexpr
+    (\ifnum#1<129 -9 \else\ifnum#1<160 #1-129 \else
+     \ifnum#1<224 -9 \else\ifnum#1<240 #1-193 \else
+     -9 \fi\fi\fi\fi)*188+%
+    (\ifnum#2<64 -9999 \else\ifnum#2<127 #2-64 \else
+     \ifnum#2<128 -9999 \else\ifnum#2<253 #2-65 \else
+     -9999 \fi\fi\fi\fi)\bxju@mk}
+\def\bxju@sjis@to@ucs@c#1\bxju@mk{%
+  \bxju@cond\ifnum#1<\ltx@zero\fi{0}{%
+    \number\fontdimen\numexpr#1+8\bxju@ul@jis}}
+
+%% \bxju@fast@cid@to@ucs{<cid>}
+\def\bxju@fast@cid@to@ucs#1{%
+  \number\fontdimen\numexpr(#1)+8\bxju@ul@cid}
+%% \bxju@fast@jsc@to@ucs{<jsc>}
+\def\bxju@fast@jsc@to@ucs#1{%
+  \number\fontdimen\numexpr(#1)+8\bxju@ul@jis}
+
+%--------------------------------------- all done
+\let\bxju@next\@undefined
+\let\bxju@ifdefinable\@undefined
+\bxju@restore@codes
+\endinput
+%% EOF
