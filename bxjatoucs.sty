@@ -167,6 +167,22 @@
 \bxju@ifdefinable\bxjaFastJscToUcsHex{%
   \def\bxjaFastJscToUcsHex{%
     \bxju@burst-`>\bxju@in@hex\bxju@fast@jsc@to@ucs}}
+%%<*> \bxjaUcsToJis{<ucs>}
+\bxju@ifdefinable\bxjaUcsToJis{%
+  \def\bxjaUcsToJis{%
+    \bxju@burst-`>\bxju@ucs@to@jis}}
+%%<*> \bxjaUcsToEuc{<ucs>}
+\bxju@ifdefinable\bxjaUcsToEuc{%
+  \def\bxjaUcsToEuc{%
+    \bxju@burst-`>\bxju@ucs@to@euc}}
+%%<*> \bxjaUcsToSjis{<ucs>}
+\bxju@ifdefinable\bxjaUcsToSjis{%
+  \def\bxjaUcsToSjis{%
+    \bxju@burst-`>\bxju@ucs@to@sjis}}
+%%<*> \bxjaFastUcsToJsc{<ucs>}
+\bxju@ifdefinable\bxjaFastUcsToJsc{%
+  \def\bxjaFastUcsToJsc{%
+    \bxju@burst-`>\bxju@fast@ucs@to@jsc}}
 
 %--------------------------------------- auxiliary
 
@@ -194,6 +210,16 @@
 \def\bxju@decomp@a#1:#2:{%
   \expandafter\bxju@decomp@b\the\numexpr#2-#1*256:#1:}
 \def\bxju@decomp@b#1:#2:#3{#3{#2}{#1}}
+
+%% \bxju@decomp@int{<number>}\CScont
+% Divides the <number> by 94 and returns the quotient and
+% the remainder as \CScont{<high>}{<low>}.
+\def\bxju@decomp@int#1{%
+  \expandafter\bxju@decomp@int@a
+      \number\numexpr\ifnum#1>\ltx@zero(#1-47)/94\else0\fi:#1:}
+\def\bxju@decomp@int@a#1:#2:{%
+  \expandafter\bxju@decomp@int@b\the\numexpr#2-#1*94:#1:}
+\def\bxju@decomp@int@b#1:#2:#3{#3{#2}{#1}}
 
 %% \bxju@in@hex\CSconv{<arg>}
 \def\bxju@in@hex#1#2{%
@@ -231,6 +257,7 @@
 %% umbralist fontdefs
 \font\bxju@ul@cid=bxjatoucs-cid
 \font\bxju@ul@jis=bxjatoucs-jis
+\font\bxju@ul@fromjis=bxjatoucs-fromjis
 
 %% \bxju@cid@to@ucs{<cid>}
 \def\bxju@cid@to@ucs#1{%
@@ -283,6 +310,55 @@
 %% \bxju@fast@jsc@to@ucs{<jsc>}
 \def\bxju@fast@jsc@to@ucs#1{%
   \number\fontdimen\numexpr(#1)+8\bxju@ul@jis}
+
+%% \bxju@conv@ucs@to@jsc{<ucs>}\CScont
+% Converts a UCS value <ucs> to JSC and returns the result.
+% If no corresponding JSC codepoint exists, returns 9999.
+\def\bxju@conv@ucs@to@jsc#1{%
+  \expandafter\bxju@conv@ucs@to@jsc@a\number\numexpr#1\bxju@mk}
+\def\bxju@conv@ucs@to@jsc@a#1\bxju@mk{%
+  \bxju@cond\ifnum#1<"10000 \fi{%
+    \expandafter\bxju@conv@ucs@to@jsc@b
+        \number\fontdimen\numexpr(#1+480)/64\bxju@ul@fromjis:#1\bxju@mk
+  }{\bxju@conv@ucs@to@jsc@a0\bxju@mk}}
+\def\bxju@conv@ucs@to@jsc@b#1:#2\bxju@mk{%
+  \expandafter\bxju@conv@ucs@to@jsc@c
+      \number\fontdimen\numexpr#2+1088-#1\bxju@ul@fromjis\bxju@mk}
+\def\bxju@conv@ucs@to@jsc@c#1\bxju@mk#2{#2{#1}}
+
+%% \bxju@ucs@to@jis{<ucs>}
+\def\bxju@ucs@to@jis#1{%
+  \bxju@check@number{#1}\bxju@ucs@to@jiseuc{8481}}
+\def\bxju@ucs@to@jiseuc#1{%
+  \bxju@conv@ucs@to@jsc{#1}\bxju@ucs@to@jiseuc@a}
+\def\bxju@ucs@to@jiseuc@a#1{%
+  \bxju@cond\ifnum#1=9999 \fi{\ltx@firstoftwo{0}}{%else
+    \bxju@decomp@int{#1}\bxju@ucs@to@jiseuc@b}}
+\def\bxju@ucs@to@jiseuc@b#1#2#3{%
+  \number\numexpr#1*256+#2+#3\relax}
+
+%% \bxju@ucs@to@euc{<ucs>}
+\def\bxju@ucs@to@euc#1{%
+  \bxju@check@number{#1}\bxju@ucs@to@jiseuc{41377}}
+
+%% \bxju@ucs@to@sjis{<ucs>}
+\def\bxju@ucs@to@sjis#1{%
+  \bxju@check@number{#1}\bxju@ucs@to@sjis@a}
+\def\bxju@ucs@to@sjis@a#1{%
+  \bxju@conv@ucs@to@jsc{#1}\bxju@ucs@to@sjis@b}
+\def\bxju@ucs@to@sjis@b#1{%
+  \bxju@cond\ifnum#1=9999 \fi{0}{%else
+    \bxju@decomp@int{#1}\bxju@ucs@to@sjis@c}}
+\def\bxju@ucs@to@sjis@c#1#2{%
+  \number\numexpr#1*128+#2 %
+    \ifodd#1 -33 \else\ifnum#2>62 +1 \fi\fi
+    \ifnum#1<62 +33088 \else +49472 \fi\relax}
+
+%% \bxju@fast@ucs@to@jsc{<ucs>}
+\def\bxju@fast@ucs@to@jsc#1{%
+  \bxju@conv@ucs@to@jsc{#1}\bxju@fast@ucs@to@jsc@a}
+\def\bxju@fast@ucs@to@jsc@a#1{%
+  \bxju@cond\ifnum#1=9999 \fi{-1}{#1}}
 
 %--------------------------------------- all done
 \let\bxju@next\@undefined
