@@ -69,6 +69,16 @@ Additional variants:
     the argument is assumed to be a valid decimal string.
   - `\bxjaFastCidToUcsHex{<value>}`: same for `\bxjaCidToUcsHex`.
 
+### Conversions from Unicode
+
+Starting from v0.3, macros for some conversions *from* Unicode (rather
+than conversions *to* Unicode) are available. The rule of input/output
+is the same as the existing macros.
+
+  - `\bxjaUcsToJis{<value>}`: converts to a jis scalar value.
+  - `\bxjaUcsToEuc{<value>}`: converts to an euc scalar value.
+  - `\bxjaUcsToSjis{<value>}`: converts to a sjis scalar value.
+
 ## Example
 
 The following `\message` lines all display `23551:21496`.
@@ -89,6 +99,8 @@ The following `\message` lines all display `5BFF:53F8`.
 Revision History
 ----------------
 
+  * Version 0.3  ‹2024/07/20›
+      - Added “Unicode to JIS”type conversions.
   * Version 0.2  ‹2019/10/20›
       - The first public version.
 
