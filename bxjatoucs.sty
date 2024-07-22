@@ -53,7 +53,7 @@
 
 %% package declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{bxjatoucs}[2024/07/20 v0.3]
+\ProvidesPackage{bxjatoucs}[2024/07/22 v0.3a]
 \def\bxju@pkgname{bxjatoucs}
 
 %--------------------------------------- "check-avail"
@@ -257,7 +257,7 @@
 %% umbralist fontdefs
 \font\bxju@ul@cid=bxjatoucs-cid
 \font\bxju@ul@jis=bxjatoucs-jis
-\font\bxju@ul@fromjis=bxjatoucs-fromjis
+\font\bxju@ul@tojis=bxjatoucs-tojis
 
 %% \bxju@cid@to@ucs{<cid>}
 \def\bxju@cid@to@ucs#1{%
@@ -319,11 +319,11 @@
 \def\bxju@conv@ucs@to@jsc@a#1\bxju@mk{%
   \bxju@cond\ifnum#1<"10000 \fi{%
     \expandafter\bxju@conv@ucs@to@jsc@b
-        \number\fontdimen\numexpr(#1+480)/64\bxju@ul@fromjis:#1\bxju@mk
+        \number\fontdimen\numexpr(#1+480)/64\bxju@ul@tojis:#1\bxju@mk
   }{\bxju@conv@ucs@to@jsc@a0\bxju@mk}}
 \def\bxju@conv@ucs@to@jsc@b#1:#2\bxju@mk{%
   \expandafter\bxju@conv@ucs@to@jsc@c
-      \number\fontdimen\numexpr#2+1088-#1\bxju@ul@fromjis\bxju@mk}
+      \number\fontdimen\numexpr#2+1088-#1\bxju@ul@tojis\bxju@mk}
 \def\bxju@conv@ucs@to@jsc@c#1\bxju@mk#2{#2{#1}}
 
 %% \bxju@ucs@to@jis{<ucs>}

@@ -67,7 +67,7 @@ sub u2i_generate {
 #--------
 
 MAIN: {
-  my (@cid, @jis, $fromjis);
+  my (@cid, @jis, $tojis);
   foreach my $gc (keys %cid_map) {
     $cid[$gc] = $cid_map{$gc};
   }
@@ -75,11 +75,11 @@ MAIN: {
     my $uc = in_ucs($ic, EJV_PTEX) or next;
     $jis[$ic] = $uc;
   }
-  $fromjis = u2i_generate();
+  $tojis = u2i_generate();
   write_whole("$out_dir/bxjatoucs-cid.tfm", form_umbralist(\@cid));
   write_whole("$out_dir/bxjatoucs-jis.tfm", form_umbralist(\@jis));
-  write_whole("$out_dir/bxjatoucs-fromjis.tfm", form_umbralist($fromjis));
+  write_whole("$out_dir/bxjatoucs-tojis.tfm", form_umbralist($tojis));
   dump_umbralist("bxjatoucs-cid", \@cid);
   dump_umbralist("bxjatoucs-jis", \@jis);
-  dump_umbralist("bxjatoucs-fromjis", $fromjis);
+  dump_umbralist("bxjatoucs-tojis", $tojis);
 }
