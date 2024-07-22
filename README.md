@@ -99,6 +99,8 @@ The following `\message` lines all display `5BFF:53F8`.
 Revision History
 ----------------
 
+  * Version 0.3a ‹2024/07/22›
+      - Renamed TFM 'bxjatoucs-fromjis' to 'bxjatoucs-tojis'.
   * Version 0.3  ‹2024/07/20›
       - Added “Unicode to JIS”type conversions.
   * Version 0.2  ‹2019/10/20›
